@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Party Quest - Jeu de Plateau Festif</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Menu Principal -->
+    <div id="main-menu" class="scene active">
+        <div class="menu-container">
+            <h1 class="game-title">🎉 Party Quest 🎉</h1>
+            <div class="menu-buttons">
+                <button class="menu-btn" onclick="game.showPlayerSelection()">
+                    <span class="btn-icon">👥</span>
+                    Nouvelle Partie
+                </button>
+                <button class="menu-btn" onclick="game.showRules()">
+                    <span class="btn-icon">📋</span>
+                    Règles du Jeu
+                </button>
+                <button class="menu-btn" onclick="game.showCredits()">
+                    <span class="btn-icon">ℹ️</span>
+                    À propos
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Règles du Jeu -->
+    <div id="rules-screen" class="scene">
+        <div class="rules-container">
+            <h2>📋 Règles du Jeu</h2>
+            <div class="rules-content">
+                <div class="rule-section">
+                    <h3>🎯 Objectif</h3>
+                    <p>Soyez le premier à atteindre la case d'arrivée en répondant correctement aux questions de culture générale et en remportant les mini-jeux !</p>
+                </div>
+                <div class="rule-section">
+                    <h3>🎲 Déroulement</h3>
+                    <ul>
+                        <li>Lancez le dé pour avancer sur le plateau</li>
+                        <li>Répondez à une question selon la couleur de votre case</li>
+                        <li><strong>Bonne réponse</strong> : vous restez sur la case</li>
+                        <li><strong>Mauvaise réponse</strong> : vous reculez d'une case et buvez une gorgée 🍺</li>
+                        <li>Après le tour de tous les joueurs, participez à un mini-jeu !</li>
+                        <li>Le gagnant du mini-jeu avance d'une case bonus</li>
+                    </ul>
+                </div>
+                <div class="rule-section">
+                    <h3>🎨 Thèmes des Cases</h3>
+                    <div class="themes-grid">
+                        <div class="theme-item" style="background: #FF6B6B">🌍 Géographie</div>
+                        <div class="theme-item" style="background: #4ECDC4">🎵 Musique</div>
+                        <div class="theme-item" style="background: #FFE66D">🎬 Cinéma</div>
+                        <div class="theme-item" style="background: #95E1D3">🎮 Jeux Vidéo</div>
+                        <div class="theme-item" style="background: #F38181">⚽ Sport</div>
+                        <div class="theme-item" style="background: #AA96DA">⭐ Célébrités</div>
+                    </div>
+                </div>
+            </div>
+            <button class="back-btn" onclick="game.showMainMenu()">Retour au Menu</button>
+        </div>
+    </div>
+
+    <!-- Crédits -->
+    <div id="credits-screen" class="scene">
+        <div class="credits-container">
+            <h2>ℹ️ À propos</h2>
+            <div class="credits-content">
+                <p><strong>Party Quest</strong></p>
+                <p>Un jeu de plateau festif inspiré de Mario Party</p>
+                <p>Version 1.0</p>
+                <p class="warning">⚠️ À consommer avec modération</p>
+            </div>
+            <button class="back-btn" onclick="game.showMainMenu()">Retour au Menu</button>
+        </div>
+    </div>
+
+    <!-- Sélection du Nombre de Joueurs -->
+    <div id="player-selection" class="scene">
+        <div class="selection-container">
+            <h2>👥 Combien de joueurs ?</h2>
+            <div class="player-count-buttons">
+                <button class="player-count-btn" onclick="game.setPlayerCount(1)">1</button>
+                <button class="player-count-btn" onclick="game.setPlayerCount(2)">2</button>
+                <button class="player-count-btn" onclick="game.setPlayerCount(3)">3</button>
+                <button class="player-count-btn" onclick="game.setPlayerCount(4)">4</button>
+                <button class="player-count-btn" onclick="game.setPlayerCount(5)">5</button>
+                <button class="player-count-btn" onclick="game.setPlayerCount(6)">6</button>
+            </div>
+            <button class="back-btn" onclick="game.showMainMenu()">Retour</button>
+        </div>
+    </div>
+
+    <!-- Configuration des Joueurs -->
+    <div id="player-config" class="scene">
+        <div class="config-container">
+            <h2>🎮 Configuration des Joueurs</h2>
+            <div id="players-config-list"></div>
+            <button class="start-game-btn" onclick="game.startGame()">Commencer la Partie</button>
+            <button class="back-btn" onclick="game.showPlayerSelection()">Retour</button>
+        </div>
+    </div>
+
+    <!-- Plateau de Jeu -->
+    <div id="game-board" class="scene">
+        <div class="game-container">
+            <!-- Header avec infos joueurs -->
+            <div class="game-header">
+                <div id="players-info" class="players-info"></div>
+                <div class="turn-info">
+                    <h3>Tour de : <span id="current-player-name"></span></h3>
+                </div>
+            </div>
+
+            <!-- Plateau -->
+            <div class="board-wrapper">
+                <canvas id="board-canvas" width="800" height="600"></canvas>
+                <div id="player-pieces"></div>
+            </div>
+
+            <!-- Zone d'action -->
+            <div class="action-zone">
+                <div id="dice-zone" class="dice-container">
+                    <button id="roll-dice-btn" class="roll-btn" onclick="game.rollDice()">
+                        🎲 Lancer le Dé
+                    </button>
+                    <div id="dice-result" class="dice-result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Modal -->
+    <div id="question-modal" class="modal">
+        <div class="modal-content question-modal">
+            <h2 id="question-theme" class="question-theme"></h2>
+            <p id="question-text" class="question-text"></p>
+            <div id="question-answers" class="answers-grid"></div>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="result-modal" class="modal">
+        <div class="modal-content result-modal">
+            <div id="result-content"></div>
+            <button class="continue-btn" onclick="game.continueAfterQuestion()">Continuer</button>
+        </div>
+    </div>
+
+    <!-- Roue des Mini-Jeux -->
+    <div id="wheel-modal" class="modal">
+        <div class="modal-content wheel-modal">
+            <h2>🎡 Mini-Jeu Aléatoire !</h2>
+            <canvas id="wheel-canvas" width="400" height="400"></canvas>
+            <button id="spin-wheel-btn" class="spin-btn" onclick="game.spinWheel()">
+                Tourner la Roue !
+            </button>
+        </div>
+    </div>
+
+    <!-- Mini-Jeu : Rapidité -->
+    <div id="minigame-speed" class="scene">
+        <div class="minigame-container">
+            <h2>⚡ Test de Rapidité !</h2>
+            <p class="minigame-instruction">Cliquez sur le bouton dès qu'il devient vert !</p>
+            <div id="speed-game-area">
+                <button id="speed-button" class="speed-btn" disabled>Préparez-vous...</button>
+            </div>
+            <div id="speed-results" class="minigame-results"></div>
+        </div>
+    </div>
+
+    <!-- Mini-Jeu : Reconnaissance de Célébrité -->
+    <div id="minigame-celebrity" class="scene">
+        <div class="minigame-container">
+            <h2>⭐ Qui est-ce ?</h2>
+            <p class="minigame-instruction">Soyez le premier à identifier la célébrité !</p>
+            <div id="celebrity-image" class="celebrity-display"></div>
+            <div id="celebrity-answers" class="celebrity-answers"></div>
+            <div id="celebrity-results" class="minigame-results"></div>
+        </div>
+    </div>
+
+    <!-- Mini-Jeu : Mémoire -->
+    <div id="minigame-memory" class="scene">
+        <div class="minigame-container">
+            <h2>🧠 Test de Mémoire !</h2>
+            <p class="minigame-instruction">Mémorisez la séquence et reproduisez-la !</p>
+            <div id="memory-sequence" class="memory-grid"></div>
+            <div id="memory-results" class="minigame-results"></div>
+        </div>
+    </div>
+
+    <!-- Écran de Victoire -->
+    <div id="victory-screen" class="scene">
+        <div class="victory-container">
+            <h1 class="victory-title">🏆 Victoire ! 🏆</h1>
+            <div id="winner-info"></div>
+            <button class="menu-btn" onclick="game.showMainMenu()">Retour au Menu</button>
+            <button class="menu-btn" onclick="game.playAgain()">Rejouer</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
